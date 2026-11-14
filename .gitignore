@@ -1,0 +1,5 @@
+.env
+/cache/
+go-proxy
+*.exe
+.DS_Store
