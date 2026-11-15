@@ -1,0 +1,38 @@
+version: 2
+
+project_name: go-proxy
+
+before:
+  hooks:
+    - go vet ./...
+
+builds:
+  - id: go-proxy
+    main: .
+    binary: go-proxy
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      - goos: darwin
+        goarch: amd64
+    ldflags:
+      - -s -w
+
+archives:
+  - id: default
+    name_template: "{{ .ProjectName }}-{{ .Os }}-{{ .Arch }}"
+    formats:
+      - binary
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  sort: asc
+  use: github
