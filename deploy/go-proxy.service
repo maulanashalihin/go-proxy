@@ -1,0 +1,16 @@
+[Unit]
+Description=go-proxy reverse proxy cache
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=go-proxy
+WorkingDirectory=/opt/go-proxy
+ExecStart=/opt/go-proxy/go-proxy
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

@@ -1,5 +1,6 @@
 .env
 /cache/
 go-proxy
+go-proxy-linux-amd64
 *.exe
 .DS_Store

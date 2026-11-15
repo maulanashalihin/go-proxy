@@ -34,11 +34,49 @@ go run .
 # open http://localhost:8080/
 ```
 
-Build:
+Build from source:
 
 ```bash
 go build -o go-proxy .
 TARGET_URL=https://dulak.pages.dev PORT=8080 ./go-proxy
+```
+
+## Linux server install (no build needed)
+
+One-liner (downloads the prebuilt `linux/amd64` binary from
+[Releases](https://github.com/maulanashalihin/go-proxy/releases),
+sets up `.env`, systemd service, and firewall):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/maulanashalihin/go-proxy/main/deploy/install.sh \
+  | sudo bash -s -- https://target-website.com 18080
+```
+
+Then open `http://<server-ip>:18080/`. The script prints your `PURGE_TOKEN`
+(save it) and the service logs are at `journalctl -u go-proxy -f`.
+
+Manual steps (same thing the script does):
+
+```bash
+# 1. download binary
+sudo mkdir -p /opt/go-proxy/cache
+curl -fsSL -o /opt/go-proxy/go-proxy \
+  https://github.com/maulanashalihin/go-proxy/releases/latest/download/go-proxy-linux-amd64
+sudo chmod +x /opt/go-proxy/go-proxy
+
+# 2. config
+sudo nano /opt/go-proxy/.env   # see .env.example, set TARGET_URL and PORT
+
+# 3. service (see deploy/go-proxy.service)
+sudo cp deploy/go-proxy.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now go-proxy
+
+# 4. firewall
+sudo ufw allow 18080/tcp
+
+# 5. verify
+curl http://localhost:18080/__health
 ```
 
 Docker:
